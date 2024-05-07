@@ -1,0 +1,125 @@
+<!-- A Versatile Layout for Full-screen Maps by Andy Cochran
+Andy Cochran 
+From https://medium.com/nyc-planning-digital/a-versatile-layout-for-full-screen-maps-229cec508b22 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Interactive Map of Local Points of Interest In Washington D.C.</title>
+
+    
+    <!-- JavaScript Libraries-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/js/foundation.js"></script>
+
+  
+    <!-- CSS Links -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css" rel="stylesheet" />
+    <link href="VersitileLayout.css" rel="stylesheet" />
+    
+
+    
+</head>
+
+<body>
+
+    <div class="site-header">
+        <strong class="site-title">My Mapping Application</strong>
+    </div>
+
+    <div class="site-main grid-x has-content-open">
+
+        <div class="search-container cell medium-3 large-2">
+            <input type="text" placeholder="Search..." class="search" />
+            <ul class="search-results no-bullet">
+                <li>Search Result 1</li>
+                <li>Search Result 2</li>
+                <li>Search Result 3</li>
+            </ul>
+        </div>
+        
+        <div class="map-container cell medium-auto large-order-2">
+             <!--  ADD iframe here, inside the versitle layout's map container (VI.2.)   -->
+                <iframe src="filter-markers.html" title="Map"></iframe> 
+        </div>
+
+        <!--  Sidebar panel  -->
+        <div class="sidebar cell medium-3 large-2 large-order-1 show-for-medium">
+            <h5>Sidebar</h5>
+            <ul>
+                <li><a class="content-link" href="#content1">Open Content 1</a></li>
+                <li><a class="content1-link" href="#content2">Open Content 2</a></li>
+                
+            </ul>
+
+            <hr />
+
+        </div>
+
+        <div class="content-close-button-container">
+            <a href="#" class="content-close-button">×</a>
+            <a href="#" class="content1-close-button">×</a>
+        </div>
+        
+        <!--  Content panel  -->
+        <div class="content cell large-5 large-order-3" id="content1">
+            <h2>Content 1</h2>
+            <p>This map displays geographical features represented by various icons such as theaters, bars, bicycles, and music venues. Each point is associated with an icon that corresponds to the type of feature it represents.</p>
+           
+            
+        </div>
+        <div class="content1 cell large-5 large-order-3" id="content2">
+            <h2>Content 2</h2>
+            
+            <p>There is a filter group located on the top right corner of the map which allows you to toggle the visibility of different types of features (theater, bar, bicycle, music venue). By checking or unchecking the checkboxes in the filter group, you can control which types of features are displayed on the map at any given time.</p>
+            
+        </div>
+
+
+    </div>
+
+    <script>
+       
+        $(document).ready(function() {
+
+            $('.content-close-button').click(function() {
+                $('.content-close-button').hide();
+                $('.content').hide();
+                $('.site-main').removeClass('has-content-open')
+
+                // When the map is resized programmatically, window resize must be triggered so that the map renders in the newly allotted space.
+                window.dispatchEvent(new Event('resize'));
+
+            });
+
+            $('.content-link').click(function() {
+                $('.content-close-button').show();
+                $('.content').show();
+                $('.site-main').addClass('has-content-open')
+                window.dispatchEvent(new Event('resize'));
+            });
+            
+            $('.content1-close-button').click(function() {
+                $('.content1-close-button').hide();
+                $('.content1').hide();
+                $('.site-main').removeClass('has-content-open')
+
+                // When the map is resized programmatically, window resize must be triggered so that the map renders in the newly allotted space.
+                window.dispatchEvent(new Event('resize'));
+
+            });
+
+            $('.content1-link').click(function() {
+                $('.content1-close-button').show();
+                $('.content1').show();
+                $('.site-main').addClass('has-content-open')
+                window.dispatchEvent(new Event('resize'));
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>
