@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Hot Springs of Oregon</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        #title {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 3px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+        #info {
+            position: absolute;
+            top: 60px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 3px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            z-index: 1;
+            max-width: 300px;
+        }
+        #legend {
+            position: absolute;
+            bottom: 30px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 3px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+        .toggle-btn {
+            cursor: pointer;
+            background-color: #0074D9;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 2px 0;
+            transition-duration: 0.4s;
+            border-radius: 5px;
+        }
+        .toggle-btn:hover {
+            background-color: #0053a0;
+        }
+    </style>
+</head>
+<body>
+<div id="title">Hot Springs of Oregon</div>
+<div id="info">
+    <button class="toggle-btn" onclick="toggleContent()">Info</button>
+    <div id="content" style="display:none;">
+        <p>This map displays the best geothermal hot springs, for relaxation and soaking, located throughout Oregon. Click on the markers to see more information about each hot spring!</p>
+        <p>Data source: <a href="https://www.oregon.gov/dogami/gtilo/pages/index-sprg.aspx?utm_source=DOGAMI&utm_medium=egov_redirect&utm_campaign=https%3A%2F%2Fwww.oregongeology.org%2Fgtilo%2Findex-sprg.htm" target="_blank">Oregon Geology</a></p>
+    </div>
+</div>
+<div id="legend">
+    <h4>Legend</h4>
+    <p><span style="background-color: #3b9ddd; width: 10px; height: 10px; display: inline-block; margin-right: 5px;"></span>Geothermal Hot Springs</p>
+</div>
+<div id="map"></div>
+<script>
+    // Mapbox access token
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic2xldGV5bTIiLCJhIjoiY2x1bGs2anFxMTJjcDJpbWpicjBpZDhkZCJ9.0HO0zd8dqaNCuvuT7DxJBg';
+
+    // Create a new map instance
+    const map = new mapboxgl.Map({
+        container: 'map', // The id of the element in which the map will be rendered
+        style: 'mapbox://styles/mapbox/streets-v11', // The style of the map
+        center: [-120.5542, 43.8041], // Initial center of the map [longitude, latitude]
+        zoom: 3, // Initial zoom level
+        minZoom: 3, // Minimum zoom level
+        maxZoom: 20, // Maximum zoom level
+        maxBounds: [[-125, 41], [-116, 47]] // Limit the map to the bounds of Oregon
+    });
+
+    // JSON data for geothermal springs
+    const geothermalSprings = {
+        "geothermal_springs": [
+            {
+                "name": "Bagby Hot Springs",
+                "location": { "latitude": 44.878, "longitude": -122.158 },
+                "description": "Located in the Mount Hood National Forest, Bagby Hot Springs features wooden bathhouses with cedar tubs.",
+                "temperature": "136°F (58°C)"
+            },
+            {
+                "name": "Umpqua Hot Springs",
+                "location": { "latitude": 43.268, "longitude": -122.362 },
+                "description": "Overlooking the North Umpqua River, these springs offer multiple soaking pools with breathtaking views.",
+                "temperature": "108°F (42°C)"
+            },
+            {
+                "name": "Alvord Hot Springs",
+                "location": { "latitude": 42.546, "longitude": -118.591 },
+                "description": "Located on the eastern side of the Steens Mountain, Alvord Hot Springs provides a rustic soaking experience.",
+                "temperature": "174°F (79°C)"
+            },
+            {
+                "name": "McCredie Hot Springs",
+                "location": { "latitude": 43.725, "longitude": -122.338 },
+                "description": "Situated near Oakridge in the Willamette National Forest, these springs have a variety of pools with varying temperatures.",
+                "temperature": "130°F (54°C)"
+            },
+            {
+                "name": "Belknap Hot Springs",
+                "location": { "latitude": 44.203, "longitude": -122.044 },
+                "description": "Located on the McKenzie River, Belknap Hot Springs features beautifully landscaped gardens and pools.",
+                "temperature": "185°F (85°C)"
+            },
+            {
+                "name": "Hunter's Hot Springs",
+                "location": { "latitude": 42.198, "longitude": -120.355 },
+                "description": "Located near Lakeview, Hunter's Hot Springs offers a developed pool with facilities.",
+                "temperature": "185°F (85°C)"
+            },
+            {
+                "name": "Crane Hot Springs",
+                "location": { "latitude": 43.409, "longitude": -118.606 },
+                "description": "Formerly known as Crystal Crane Hot Springs, this spot offers private and public soaking options.",
+                "temperature": "150°F (66°C)"
+            },
+            {
+                "name": "Summer Lake Hot Springs",
+                "location": { "latitude": 42.957, "longitude": -120.782 },
+                "description": "An off-the-beaten-path destination offering a rustic experience with natural hot springs pools.",
+                "temperature": "118°F (48°C)"
+            },
+            {
+                "name": "Paulina Lake Hot Springs",
+                "location": { "latitude": 43.719, "longitude": -121.261 },
+                "description": "Located in the Newberry National Volcanic Monument, these hot springs are along the shoreline of Paulina Lake.",
+                "temperature": "95-115°F (35-46°C)"
+            },
+            {
+                "name": "East Lake Hot Springs",
+                "location": { "latitude": 43.683, "longitude": -121.227 },
+                "description": "Found on the eastern shore of East Lake, these springs provide a natural soaking experience.",
+                "temperature": "95-110°F (35-43°C)"
+            },
+            {
+                "name": "Snively Hot Springs",
+                "location": { "latitude": 43.196, "longitude": -117.337 },
+                "description": "Located along the Owyhee River, Snively Hot Springs offers a rustic soaking spot with scenic views.",
+                "temperature": "100-105°F (38-41°C)"
+            },
+            {
+                "name": "Terwilliger (Cougar) Hot Springs",
+                "location": { "latitude": 44.086, "longitude": -122.266 },
+                "description": "Nestled in the Willamette National Forest, these springs feature a series of tiered pools.",
+                "temperature": "112°F (44°C)"
+            },
+            {
+                "name": "Austin Hot Springs",
+                "location": { "latitude": 44.830, "longitude": -122.012 },
+                "description": "Located on the Clackamas River, these undeveloped springs can be quite hot and require caution.",
+                "temperature": "up to 200°F (93°C)"
+            },
+            {
+                "name": "Breitenbush Hot Springs",
+                "location": { "latitude": 44.796, "longitude": -121.977 },
+                "description": "A retreat and conference center offering developed hot springs and wellness programs.",
+                "temperature": "180°F (82°C)"
+            }
+        ]
+    };
+
+    // Add markers to the map
+    geothermalSprings.geothermal_springs.forEach(spring => {
+        // Create a marker for each geothermal spring
+        const marker = new mapboxgl.Marker()
+            .setLngLat([spring.location.longitude, spring.location.latitude]) // Set marker position
+            .setPopup(new mapboxgl.Popup({ offset: 25 }) // Add popups to markers
+                .setHTML(`<h3>${spring.name}</h3><p>${spring.description}</p><p><strong>Temperature:</strong> ${spring.temperature}</p>`)) // Set popup content
+            .addTo(map); // Add marker to the map
+    });
+
+    // Toggle content visibility
+    function toggleContent() {
+        const content = document.getElementById('content');
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>
