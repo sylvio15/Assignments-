@@ -4,11 +4,15 @@
     <meta charset="utf-8">
     <title>Hot Springs of Oregon</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <!-- Import Mapbox GL JS and CSS -->
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
     <style>
-        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        /* Set font to Garamond and remove default margins and padding */
+        body { margin: 0; padding: 0; font-family: Garamond, serif; }
+        /* Style the map container */
         #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        /* Style the title box */
         #title {
             position: absolute;
             top: 10px;
@@ -18,7 +22,9 @@
             border-radius: 3px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             z-index: 1;
+            font-size: 24px;
         }
+        /* Style the info box */
         #info {
             position: absolute;
             top: 60px;
@@ -30,6 +36,7 @@
             z-index: 1;
             max-width: 300px;
         }
+        /* Style the legend box */
         #legend {
             position: absolute;
             bottom: 30px;
@@ -40,6 +47,7 @@
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             z-index: 1;
         }
+        /* Style the toggle button */
         .toggle-btn {
             cursor: pointer;
             background-color: #0074D9;
@@ -57,24 +65,35 @@
         .toggle-btn:hover {
             background-color: #0053a0;
         }
+        /* Style the map pin icon */
+        .icon {
+            vertical-align: middle;
+            width: 16px;
+            height: 16px;
+        }
     </style>
 </head>
 <body>
 <div id="title">Hot Springs of Oregon</div>
 <div id="info">
+    <!-- Button to toggle visibility of additional info -->
     <button class="toggle-btn" onclick="toggleContent()">Info</button>
     <div id="content" style="display:none;">
+        <!-- Information about hot springs and disclaimer about temperature accuracy -->
+        <p>Hot springs are natural pools of geothermally heated water that offer a relaxing and therapeutic experience. Oregon is home to many hot springs ranging from being located in scenic and remote areas to nearby cities.</p>
+        <p>Please note: The temperatures listed for each hot spring are approximate and may vary.</p>
         <p>This map displays the best geothermal hot springs, for relaxation and soaking, located throughout Oregon. Click on the markers to see more information about each hot spring!</p>
         <p>Data source: <a href="https://www.oregon.gov/dogami/gtilo/pages/index-sprg.aspx?utm_source=DOGAMI&utm_medium=egov_redirect&utm_campaign=https%3A%2F%2Fwww.oregongeology.org%2Fgtilo%2Findex-sprg.htm" target="_blank">Oregon Geology</a></p>
     </div>
 </div>
 <div id="legend">
     <h4>Legend</h4>
-    <p><span style="background-color: #3b9ddd; width: 10px; height: 10px; display: inline-block; margin-right: 5px;"></span>Geothermal Hot Springs</p>
+    <!-- Legend entry with map pin icon for geothermal hot springs -->
+    <p><img src="icons8-map-pin-50.png" alt="Map Pin" class="icon"> Geothermal Hot Springs</p>
 </div>
 <div id="map"></div>
 <script>
-    // Mapbox access token
+    // Set Mapbox access token
     mapboxgl.accessToken = 'pk.eyJ1Ijoic2xldGV5bTIiLCJhIjoiY2x1bGs2anFxMTJjcDJpbWpicjBpZDhkZCJ9.0HO0zd8dqaNCuvuT7DxJBg';
 
     // Create a new map instance
@@ -178,7 +197,7 @@
         ]
     };
 
-    // Add markers to the map
+    // Add markers to the map for each geothermal spring
     geothermalSprings.geothermal_springs.forEach(spring => {
         // Create a marker for each geothermal spring
         const marker = new mapboxgl.Marker()
@@ -188,7 +207,7 @@
             .addTo(map); // Add marker to the map
     });
 
-    // Toggle content visibility
+    // Function to toggle visibility of additional info in the info box
     function toggleContent() {
         const content = document.getElementById('content');
         if (content.style.display === 'none') {
